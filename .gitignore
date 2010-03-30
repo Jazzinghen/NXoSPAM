@@ -1,0 +1,34 @@
+# Generally annoying things.
+*.[oa]
+*.pyc
+*.bin
+*.elf
+*.map
+*.lds
+*.orig
+*.log
+*~
+\#*\#
+.\#*
+
+# The base appkernel linker script shouldn't be ignored.
+!nxos/systems/appkernel.lds
+
+# Python distutils creates this when building.
+pynxt/build/
+
+# Files generated during a NxOS build.
+nxos/systems/*/*.lds
+nxos/base/_font.h
+nxos/doc/*/
+
+# The TVM port has a whole SVN checkout not managed by hg.
+nxos/systems/tvm/tvm/
+
+# SCons cruft
+nxos/.sconsign.dblite
+nxos/.sconf_temp
+nxos/build_flags.py
+
+# Precommit hooks drop a commit.msg file if they fail.
+commit.msg
