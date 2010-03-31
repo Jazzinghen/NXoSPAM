@@ -13,7 +13,7 @@
 
 #include "base/drivers/motors.h"
 #include "base/display.h"
-#include "base/drivers/sensors.h"
+#include "base/drivers/lightsensor.h"
 
 #include "tests/tests.h"
 
@@ -35,21 +35,11 @@ static void security_hook(void) {
     nx_core_halt();
 }
 
-/* Light sensor initialisation. As a test we will try to initialise it as an
- * analogic sensor.
- * We have to set the first DIGIAI0 pin to light up the floodLight.
- */
-
-static void light_sensor_init (U32 port) {
-  nx_sensors_analog_enable(port);
-  nx_sensors_analog_digi_set(port, 0);
-}
-
 static void display_rotation_data (S8 vel, S32 tot) {
   nx_display_clear();
   /* Display Light Intensity as read by the Light Sensor */
   nx_display_string("Luminosità: ");
-  nx_display_uint(((1023 - nx_sensors_analog_get(LIGHT_SENSOR))*100) >> 10);
+  nx_display_uint(nx_lightsensor_get_raw(LIGHT_SENSOR));
   nx_display_end_line();
   /* Display Radar Motor's Speed */
   nx_display_string("Velocità: ");
@@ -87,7 +77,8 @@ void main(void) {
   //tests_defrag();
   
   nx_radar_init(RADAR_SENSOR);
-  light_sensor_init(LIGHT_SENSOR);
+  nx_lightsensor_init(LIGHT_SENSOR);
+  nx_lightsensor_fire_spamlight(LIGHT_SENSOR);
   
  /* for (fuffa_rot = 0; (nx_motors_get_tach_count(0) % 360) < 90; fuffa_rot++) {
       nx_systick_wait_ms(1000);

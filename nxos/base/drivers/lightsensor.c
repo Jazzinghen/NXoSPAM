@@ -7,6 +7,7 @@
  */
 
 #include "base/drivers/sensors.h"
+#include "base/drivers/lightsensor.h"
 
 
 /** Initializes the Lightsensor in analog mode. */
