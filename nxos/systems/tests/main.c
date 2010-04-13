@@ -35,7 +35,7 @@ static void security_hook(void) {
     nx_core_halt();
 }
 
-static void display_rotation_data (S8 vel, S32 tot) {
+static void display_rotation_data (S8 vel, S32 tot, S8 sangle) {
   nx_display_clear();
   /* Display Light Intensity as read by the Light Sensor */
   nx_display_string("Luminosità: ");
@@ -51,6 +51,9 @@ static void display_rotation_data (S8 vel, S32 tot) {
   };
   nx_display_end_line();
   /* Display actual angle of tha Radar's Motor */
+  nx_display_string("Start Angle: ");
+  nx_display_int(sangle);
+  nx_display_end_line();
   nx_display_string("Angolo: ");
   if (tot >= 0) {
     nx_display_uint(tot % 360);
@@ -67,6 +70,7 @@ void main(void) {
   bool moving = FALSE;
   S32 total_rotation = 0;
   S8 speed = 60;
+  S8 start_angle = 0;
 
   //tests_all();
   //tests_usb();
@@ -78,7 +82,7 @@ void main(void) {
   
   nx_radar_init(RADAR_SENSOR);
   nx_lightsensor_init(LIGHT_SENSOR);
-  nx_lightsensor_fire_spamlight(LIGHT_SENSOR);
+  //nx_lightsensor_fire_spamlight(LIGHT_SENSOR);
   
  /* for (fuffa_rot = 0; (nx_motors_get_tach_count(0) % 360) < 90; fuffa_rot++) {
       nx_systick_wait_ms(1000);
@@ -90,7 +94,7 @@ void main(void) {
     //nx_display_cursor_set_pos(9, 3);
     nx_display_clear();
     total_rotation = nx_motors_get_tach_count(RADAR_MOTOR); 
-    display_rotation_data(speed, total_rotation);
+    display_rotation_data(speed, total_rotation, start_angle);
     
     
     
@@ -100,9 +104,11 @@ void main(void) {
           speed -= 5;
         } else {
           speed = -100;
-        }
-        nx_motors_rotate (0, speed);*/
-        nx_motors_rotate_angle(RADAR_MOTOR, -55, 45, FALSE);
+        }*/
+        nx_motors_rotate (0, -60);
+        nx_systick_wait_ms(100);
+        start_angle = nx_motors_get_tach_count(0);
+        nx_motors_rotate_angle(RADAR_MOTOR, -35, 45, FALSE);
         /*nx_systick_wait_ms(1000);
          *nx_motors_rotate_angle(0, 100, 45, TRUE);
          */
@@ -114,7 +120,10 @@ void main(void) {
           speed = 100;
         }
         nx_motors_rotate (0, speed);*/
-        nx_motors_rotate_angle(RADAR_MOTOR, 55, 45, FALSE);
+        nx_motors_rotate (0, 60);
+        nx_systick_wait_ms(100);
+        start_angle = nx_motors_get_tach_count(0);
+        nx_motors_rotate_angle(RADAR_MOTOR, 35, 45, FALSE);
         break;
       case BUTTON_OK:
         if (moving) {
